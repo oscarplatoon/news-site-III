@@ -1,5 +1,4 @@
-
-import ArticlesAPI from './ArticlesAPI'
+import {fetchArticleByID, fetchArticles, fetchArticlesBySection} from './ArticlesAPI'
 import fetchMock from 'fetch-mock'
 require('isomorphic-fetch')
 
@@ -7,38 +6,20 @@ afterEach(() => {
   fetchMock.restore()
 })
 
-it('calls ArticlesAPI.fetchArticleByID(1)', (done) => {
+it('calls ArticlesAPI.fetchArticleByID(1)', async () => {
   fetchMock.get('http://localhost:3001/api/articles/1', { success: true })
-  return ArticlesAPI.fetchArticleByID(1)
-    .then((json) => {
-      expect(json.success).toEqual(true)
-      done()
-    })
-    .catch((err) => {
-      throw new Error('Call failed')
-    })
+  const res = await fetchArticleByID(1)
+  expect(await res.success).toBe(true)
 })
 
-it('calls ArticlesAPI.fetchArticles()', (done) => {
+it('calls ArticlesAPI.fetchArticles()', async () => {
   fetchMock.get('http://localhost:3001/api/articles', { success: true })
-  return ArticlesAPI.fetchArticles()
-    .then((json) => {
-      expect(json.success).toEqual(true)
-      done()
-    })
-    .catch((err) => {
-      throw new Error('Call failed')
-    })
+  const res = await fetchArticles()
+  expect(await res.success).toBe(true)
 })
 
-it('calls ArticlesAPI.fetchArticlesBySection(\'opinion\')', (done) => {
+it('calls ArticlesAPI.fetchArticlesBySection(\'opinion\')', async () => {
   fetchMock.get('http://localhost:3001/api/articles?filter={"where":{"section":"opinion"}}', { success: true })
-  return ArticlesAPI.fetchArticlesBySection('opinion')
-    .then((json) => {
-      expect(json.success).toEqual(true)
-      done()
-    })
-    .catch((err) => {
-      throw new Error('Call failed')
-    })
+  const res = await fetchArticlesBySection('opinion')
+  expect(await res.success).toBe(true)
 })
