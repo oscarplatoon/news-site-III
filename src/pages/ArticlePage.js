@@ -1,16 +1,34 @@
 import React, { Component } from 'react';
 import Article from '../components/Article/Article.js'
-import News from '../data/news.json';
+import ArticleAPI from '../api/ArticlesAPI.js';
 
 class ArticlePage extends Component {
+  state = {
+    article: null
+  }
+
+  async componentDidMount() {
+      try {
+        const articleID = this.props.match.params.articleID;
+        const json = await ArticleAPI.fetchArticleByID(articleID)
+        this.setState({
+          article: json
+        });
+      } catch (error) {
+        console.error('Error occurred fetching data: ', error);
+      }
+  }
+
+
+
+
   render() {
-    const articleIndex = this.props.match.params.articleID - 1;
-    const article = News[articleIndex];
-    const image = article.multimedia.length ? article.multimedia[2].url : null;
+    const image = this.state.article && this.state.article.image;
 
     return (
       <div>
-        {article ? <Article {...article } image={ image } /> :
+        {
+          this.state.article ? <Article {...this.state.article } image={ image } /> :
           <span>404: Article Not Found</span>
         }
       </div>
